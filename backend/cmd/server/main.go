@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv" // Thêm thư viện load .env
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
@@ -12,6 +13,9 @@ import (
 )
 
 func main() {
+	// Cố gắng load file .env (nếu chạy local). Dùng dấu gạch dưới để bỏ qua lỗi nếu không tìm thấy file trên Production server
+	_ = godotenv.Load()
+
 	databaseURL := os.Getenv("DATABASE_URL")
 	if databaseURL == "" {
 		log.Fatal("DATABASE_URL is required")
@@ -31,6 +35,7 @@ func main() {
 	if address == "" {
 		address = ":8080"
 	}
+	log.Printf("Server is starting on %s...", address)
 	if err := router.Run(address); err != nil {
 		log.Fatalf("run server: %v", err)
 	}
